@@ -49,5 +49,14 @@ const putCRUD = async (req, res) => {
     
 }
 
+const deleteCRUD = async (req, res) => {
+    const userId = req.query.id;
+    if(userId) {
+        const allUsers = await CRUDService.deleteUserById(userId);
+        return res.render('displayCRUD.ejs', {data: allUsers});
+    }
+     return res.send('User not found');
+}
 
-export default {getHomePage, crud, postCRUD, displayGetCRUD, getEditCRUD, putCRUD};
+
+export default {getHomePage, crud, postCRUD, displayGetCRUD, getEditCRUD, putCRUD, deleteCRUD};

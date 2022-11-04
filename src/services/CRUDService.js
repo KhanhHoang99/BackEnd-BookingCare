@@ -88,4 +88,16 @@ const updateUserData = (data) => {
    })
 }
 
-export default {hashUserPassword, createNewUser, getAllUser, getUserInfoById, updateUserData}
+const deleteUserById = (userId) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+           await db.User.destroy({ where: { id: userId } });
+           const allUsers = await db.User.findAll();
+           resolve(allUsers);
+        } catch (error) {
+            reject(error);
+        }
+   })
+}
+
+export default {hashUserPassword, createNewUser, getAllUser, getUserInfoById, updateUserData, deleteUserById}

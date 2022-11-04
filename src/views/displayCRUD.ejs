@@ -34,7 +34,7 @@
                         <td><%= item.gender %></td>
                         <td>
                             <a href="/edit-crud?id=<%= item.id %>" type="button" class="btn btn-warning">Edit</a>
-                            <a type="button" class="btn btn-danger">Delete</a>
+                            <a href="/delete-crud?id=<%= item.id %>" type="button" class="btn btn-danger">Delete</a>
                         </td>
                       </tr>
                 <% }); %>
