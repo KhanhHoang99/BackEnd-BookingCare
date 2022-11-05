@@ -9,7 +9,7 @@ const createNewUser = async (data) => {
 
     return new Promise(async (resolve, reject) => {
         try {
-            const hashPasswordFromBcrypt = await hashUserPassword(data?.password);
+            const hashPasswordFromBcrypt = await hashUserPassword(data.password);
             await db.User.create({
                 email: data.email,
                 password: hashPasswordFromBcrypt,
@@ -32,7 +32,7 @@ const createNewUser = async (data) => {
 const hashUserPassword = (password) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const hashPassword =  await bcrypt.hashSync("B4c0/\/", salt);
+            const hashPassword =  await bcrypt.hashSync(password, salt);
             resolve(hashPassword);
             
         } catch (error) {
