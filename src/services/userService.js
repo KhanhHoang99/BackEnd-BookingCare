@@ -148,7 +148,8 @@ const createNewUser = (data) => {
                     phoneNumber: data.phoneNumber,
                     gender: data.gender,
                     roleId: data.role,
-                    positionId: data.position
+                    positionId: data.position,
+                    image: data.avatar
                 })
     
                 resolve({
@@ -213,11 +214,12 @@ const updateUserData = (data) => {
                     const positionId = data.positionId;
                     const gender = data.gender;
                     const phoneNumber = data.phoneNumber;
+                    const image = data.avatar;
                     
-                    await db.User.update({firstName, lastName, address, roleId, positionId, gender, phoneNumber},{where: { id: userId }});
+                    await db.User.update({firstName, lastName, address, roleId, positionId, gender, phoneNumber, image},{where: { id: userId }});
                     resolve({
-                            errCode: 0,
-                            message: 'update the user successfully'
+                        errCode: 0,
+                        message: 'update the user successfully'
                     });
     
                 
