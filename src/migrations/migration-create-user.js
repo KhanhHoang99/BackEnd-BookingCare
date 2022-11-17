@@ -1,4 +1,7 @@
 'use strict';
+
+const { Sequelize } = require('sequelize');
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -28,7 +31,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       gender: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.STRING
       },
       image: {
         type: Sequelize.STRING
@@ -53,3 +56,4 @@ module.exports = {
     await queryInterface.dropTable('Users');
   }
 };
+

@@ -28,7 +28,7 @@ const handleUserLogin = (userEmail, password) => {
 
                 const user = await db.User.findOne({
                     where: {email: userEmail},
-                    attributes: ['email', 'roleId', 'password'],
+                    attributes: ['email', 'roleId', 'password', 'firstName', 'lastName'],
                     raw: true
                 })
 
@@ -146,8 +146,9 @@ const createNewUser = (data) => {
                     lastName: data.lastName,
                     address: data.address,
                     phoneNumber: data.phoneNumber,
-                    gender: data.gender === '1' ? true : false,
-                    roleId: data.roleId,
+                    gender: data.gender,
+                    roleId: data.role,
+                    positionId: data.position
                 })
     
                 resolve({
@@ -192,8 +193,10 @@ const deleteUserById = (userId) => {
 const updateUserData = (data) => {
 
     return new Promise(async(resolve, reject) => {
+
         try {
-            if(!data.id) {
+            // console.log("data: ", data)
+            if(!data.id || !data.roleId || !data.positionId || !data.gender) {
                 resolve({
                     errCode: 2,
                     message: 'missing param'
@@ -206,8 +209,12 @@ const updateUserData = (data) => {
                     const lastName = data.lastName;
                     const address = data.address;
                     const userId = parseInt(data.id);
+                    const roleId = data.roleId;
+                    const positionId = data.positionId;
+                    const gender = data.gender;
+                    const phoneNumber = data.phoneNumber;
                     
-                    await db.User.update({firstName, lastName, address},{where: { id: userId }});
+                    await db.User.update({firstName, lastName, address, roleId, positionId, gender, phoneNumber},{where: { id: userId }});
                     resolve({
                             errCode: 0,
                             message: 'update the user successfully'

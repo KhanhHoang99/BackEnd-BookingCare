@@ -4,7 +4,7 @@ import configViewEngine from './config/viewEngine.js';
 import initWebRoutes from './routes/web.js';
 import * as dotenv from 'dotenv'; 
 import connectDB from './config/connectDB.js';
-var cors = require('cors')
+var cors = require('cors');
 
 import bodyParser from "body-parser";
 
