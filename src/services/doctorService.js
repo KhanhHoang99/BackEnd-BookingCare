@@ -30,4 +30,58 @@ const handleGetTopDoctorHome = (limitInput) => {
     })
 }
 
-export default {handleGetTopDoctorHome}
+const handleGetAllDoctors = () => {
+
+    return new Promise(async (resolve, reject) => {
+        try {
+            let doctors = await db.User.findAll({
+                where: {roleId: 'R2'},
+                attributes: {
+                    exclude: ['password', 'image']
+                },
+                raw: true,
+            })
+
+            resolve({
+                errCode: 0,
+                data: doctors
+            })
+
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+
+const handleSaveDetailInfoDoctor = (inputData) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            if(!inputData.doctorId || !inputData.contentHTML || !inputData.contentMarkdown){
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing parameter'
+                })
+    
+            }else{
+                 await db.Markdown.create({
+                    contentHTML: inputData.contentHTML,
+                    contentMarkdown: inputData.contentMarkdown,
+                    description: inputData.description,
+                    doctorId: inputData.doctorId
+                })
+            }
+
+
+            resolve({
+                errCode: 0,
+                errMessage: 'Save info doctor success'
+            })
+
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+
+export default {handleGetTopDoctorHome, handleGetAllDoctors, handleSaveDetailInfoDoctor}
