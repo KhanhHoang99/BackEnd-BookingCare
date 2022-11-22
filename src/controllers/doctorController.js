@@ -47,4 +47,18 @@ const postInfoDoctor = async (req, res) => {
     }
 }
 
-export default {getTopDoctorHome, getAllDoctors, postInfoDoctor}
+const getDetailDoctorById = async (req, res) => {
+
+    try {
+        let info = await doctorService.getDetailDoctorById(req.query.id);
+        return res.status(200).json(info);
+    } catch (error) {
+        console.log(error)
+        return res.status(200).json({
+            errCode: -1,
+            message: 'Error from server...'
+        })
+    }
+}
+
+export default {getTopDoctorHome, getAllDoctors, postInfoDoctor, getDetailDoctorById}

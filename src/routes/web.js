@@ -28,9 +28,14 @@ const initWebRoutes = (app) => {
 
 
     router.get('/api/top-doctor-home', doctorController.getTopDoctorHome);
-
     router.get('/api/get-all-doctors', doctorController.getAllDoctors);
     router.post('/api/save-info-doctor', doctorController.postInfoDoctor);
+    router.get('/api/get-detail-doctor-by-id', doctorController.getDetailDoctorById);
+
+
+
+
+
     
     return app.use('/', router);
 }
