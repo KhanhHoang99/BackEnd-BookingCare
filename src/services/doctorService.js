@@ -1,4 +1,9 @@
-import db from '../models/index'
+import db from '../models/index';
+import * as dotenv from 'dotenv'; 
+import _ from "lodash";
+
+dotenv.config();
+const MAX_NUMBER_SCHEDULE = process.env.MAX_NUMBER_SCHEDULE;
 
 const handleGetTopDoctorHome = (limitInput) => {
 
@@ -57,19 +62,33 @@ const handleSaveDetailInfoDoctor = (inputData) => {
     return new Promise(async (resolve, reject) => {
         try {
 
-            if(!inputData.doctorId || !inputData.contentHTML || !inputData.contentMarkdown){
+            if(!inputData.doctorId || !inputData.contentHTML || !inputData.contentMarkdown || !inputData.action){
                 resolve({
                     errCode: 1,
                     errMessage: 'Missing parameter'
                 })
     
             }else{
-                 await db.Markdown.create({
-                    contentHTML: inputData.contentHTML,
-                    contentMarkdown: inputData.contentMarkdown,
-                    description: inputData.description,
-                    doctorId: inputData.doctorId
-                })
+                if(inputData.action === 'CREATE'){
+                    await db.Markdown.create({
+                       contentHTML: inputData.contentHTML,
+                       contentMarkdown: inputData.contentMarkdown,
+                       description: inputData.description,
+                       doctorId: inputData.doctorId
+                   })
+                }else{
+                    let doctorMarkdown = await db.Markdown.findOne({
+                        where: {doctorId: inputData.doctorId},
+                        raw: false
+                    })
+
+                    if(doctorMarkdown) {
+                        doctorMarkdown.contentHTML = inputData.contentHTML;
+                        doctorMarkdown.contentMarkdown = inputData.contentMarkdown;
+                        doctorMarkdown.description = inputData.description;
+                        await doctorMarkdown.save();
+                    }
+                }
             }
 
 
@@ -100,7 +119,7 @@ const getDetailDoctorById = (id) => {
                         id: id
                     },
                     attributes: {
-                        exclude: ['password', 'image']
+                        exclude: ['password']
                     },
                     include: [
                         {
@@ -109,12 +128,20 @@ const getDetailDoctorById = (id) => {
                         },
                         {model: db.Allcode, as: 'positionData', attributes: ['valueEn', 'valueVi']},
                     ],
-                    raw: true,
+                    raw: false,
                     nest: true
                 })
 
+                if(data && data.image) {
+                    data.image = new Buffer(data.image, 'base64').toString('binary');
+                }
+
+                if(!data) {
+                    data = {}
+                }
+
                 resolve({
-                    errCode: 1,
+                    errCode: 0,
                     data: data
                 })
             }
@@ -131,4 +158,71 @@ const getDetailDoctorById = (id) => {
     })
 }
 
-export default {handleGetTopDoctorHome, handleGetAllDoctors, handleSaveDetailInfoDoctor,  getDetailDoctorById}
+const bulkCreateSchedule = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            if(!data.arrSchedule || !data.doctorId || !data.date){
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing parameter'
+                })
+    
+            }else{
+
+                // get schedule from client
+                let schedule = data.arrSchedule;
+                if(schedule && schedule.length > 0) {
+
+                    schedule = schedule.map(item => {
+                        item.maxNumber = MAX_NUMBER_SCHEDULE;
+                        return item;
+                    })
+                }
+
+                // console.log('schedule: ', schedule)
+
+
+                //get all existing data
+                let existing = await db.Schedule.findAll({
+                    where: {doctorId: data.doctorId, date: data.date},
+                    attributes: ['timeType', 'date', 'doctorId', 'maxNumber'],
+                    raw: true
+                });
+
+                // convert date
+                if(existing && existing.length > 0) {
+                    existing = existing.map(item => {
+                        item.date = new Date(item.date).getTime();
+                        return item;
+                    })
+                }
+
+                // console.log('existing: ', existing)
+
+                //compare different
+                let toCreate = _.differenceWith(schedule, existing, (a, b) => {
+                    return a.timeType === b.timeType && a.date === b.date;
+                });
+
+                // console.log('check different : ', toCreate)
+
+                if(toCreate && toCreate.length > 0) {
+                    await db.Schedule.bulkCreate(toCreate)
+                }
+
+                
+                resolve({
+                    errCode: 0,
+                    errMessage: `Save doctor's schedule success`
+                })
+            }
+
+
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+
+export default {handleGetTopDoctorHome, handleGetAllDoctors, handleSaveDetailInfoDoctor,  getDetailDoctorById, bulkCreateSchedule}
