@@ -225,4 +225,47 @@ const bulkCreateSchedule = (data) => {
     })
 }
 
-export default {handleGetTopDoctorHome, handleGetAllDoctors, handleSaveDetailInfoDoctor,  getDetailDoctorById, bulkCreateSchedule}
+const getScheduleByDate = (doctorId, date) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            if(!doctorId || !date){
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing parameter'
+                })
+    
+            }else{
+                let dataSchedule = await db.Schedule.findAll({
+                    where: {
+                        doctorId: doctorId,
+                        date: date
+                    },
+                })
+
+                console.log('dataSchedule: ', dataSchedule)
+
+                if(!dataSchedule) {
+                    dataSchedule = []
+                }
+
+                resolve({
+                    errCode: 0,
+                    data: dataSchedule
+                })
+            }
+
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+
+export default {
+    handleGetTopDoctorHome, 
+    handleGetAllDoctors, 
+    handleSaveDetailInfoDoctor,  
+    getDetailDoctorById, 
+    bulkCreateSchedule, 
+    getScheduleByDate
+}
