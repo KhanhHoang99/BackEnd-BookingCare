@@ -405,7 +405,7 @@ const getProfileDoctorById = (doctorId) => {
                     data = {}
                 }
 
-                console.log('data to react: ',data)
+                // console.log('data to react: ',data)
 
                 resolve({
                     errCode: 0,

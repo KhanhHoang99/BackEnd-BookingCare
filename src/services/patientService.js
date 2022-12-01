@@ -20,13 +20,14 @@ const postBookAppointment = (data) => {
                     }
                 });
 
+
                 if(user && user[0]) {
                     await db.Booking.findOrCreate({
-                        where: {patientId: user[0].id},
+                        where: {patienId: user[0].id},
                         defaults: {
                             statusId: 'S1',
                             doctorId: data.doctorId,
-                            patientId: user[0].id,
+                            patienId: user[0].id,
                             date: data.date,
                             timeType: data.timeType
                         }
@@ -39,6 +40,7 @@ const postBookAppointment = (data) => {
                 })
             }
         } catch (error) {
+            // console.log('err: ',error)
             reject(error);
         }
     })
