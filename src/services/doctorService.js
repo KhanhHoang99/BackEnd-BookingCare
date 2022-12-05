@@ -419,6 +419,7 @@ const getProfileDoctorById = (doctorId) => {
     })
 }
 
+
 export default {
     handleGetTopDoctorHome, 
     handleGetAllDoctors, 
@@ -427,5 +428,5 @@ export default {
     bulkCreateSchedule, 
     getScheduleByDate,
     getExtraInforDoctorById,
-    getProfileDoctorById
+    getProfileDoctorById,
 }

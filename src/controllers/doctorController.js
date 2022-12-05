@@ -116,9 +116,11 @@ const getProfileDoctorById = async (req, res) => {
     }
 }
 
+
+
 export default {
     getTopDoctorHome, getAllDoctors, 
     postInfoDoctor, getDetailDoctorById, 
     bulkCreateSchedule, getScheduleByDate,
-    getExtraInforDoctorById, getProfileDoctorById
+    getExtraInforDoctorById, getProfileDoctorById,
 }
