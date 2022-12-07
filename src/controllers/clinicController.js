@@ -14,4 +14,33 @@ const createClinic = async (req, res) => {
     }
 }
 
-export default {createClinic}
+const getAllClinic = async (req, res) => {
+    try {
+        
+        let response = await clinicService.getAllClinic();
+        return res.status(200).json(response);
+    } catch (error) {
+        console.log(error)
+        return res.status(200).json({
+            errCode: -1,
+            message: 'Error from server...'
+        })
+    }
+}
+
+
+const getDetailClinicById = async (req, res) => {
+    try {
+        
+        let response = await clinicService.getDetailClinicById(req.query.id);
+        return res.status(200).json(response);
+    } catch (error) {
+        console.log(error)
+        return res.status(200).json({
+            errCode: -1,
+            message: 'Error from server...'
+        })
+    }
+}
+
+export default {createClinic, getAllClinic, getDetailClinicById}

@@ -1,3 +1,4 @@
+
 import db from '../models/index';
 
 const createClinic = (data) => {
@@ -33,4 +34,72 @@ const createClinic = (data) => {
 
 }
 
-export default {createClinic}
+const getAllClinic= () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let data = await db.Clinic.findAll({
+                raw: true,
+            })
+
+            if(data && data.length > 0) {
+                data = data.map(item => {
+                    item.image = new Buffer(item.image, 'base64').toString('binary');
+                    return item;
+                })
+            }
+
+            resolve({
+                errCode: 0,
+                data: data
+            })
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+
+const getDetailClinicById = async (inputId) => {
+    
+    return new Promise(async(resolve, reject) => {
+        try {
+            if(!inputId) {
+                resolve({
+                    errCode: 1,
+                    errMassage: 'Missing parameter'
+                })
+            }else {
+        
+                let data = {}
+        
+                data = await db.Clinic.findOne({
+                    where: {
+                        id: inputId
+                    },
+                    attributes: ['name', 'address', 'descriptionHTML', 'descriptionMarkdown']
+                })
+
+                
+
+                if(data) {
+                    let doctorClinic = [];
+                    doctorClinic = await db.Doctor_Infor.findAll({
+                        where: { clinicId: inputId},
+                        attributes: ['doctorId', 'provinceId']
+                    })
+                    data.doctorClinic = doctorClinic;
+                }
+
+                resolve({
+                    errCode: 0,
+                    errMassage: 'Ok',
+                    data: data
+                })
+        
+            }
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+export default {createClinic, getAllClinic, getDetailClinicById}
