@@ -43,18 +43,20 @@ const postBookAppointment = (data) => {
                       roleId: 'R3',
                       gender: data.selectedGender,
                       address: data.address,
-                      firstName: data.fullName
+                      firstName: data.fullName,
+                      phoneNumber: data.phoneNumber
                     }
                 });
 
-
+                
                 if(user && user[0]) {
+
                     await db.Booking.findOrCreate({
-                        where: {patienId: user[0].id},
+                        where: {patientId: user[0].id},
                         defaults: {
                             statusId: 'S1',
                             doctorId: data.doctorId,
-                            patienId: user[0].id,
+                            patientId: user[0].id,
                             date: data.date,
                             timeType: data.timeType,
                             token: token
